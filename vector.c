@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#ifndef VECTOR_C_
+#define VECTOR_C_
 #define VECTOR_ERROR_VAL 00
 #include <assert.h>
 #include <stddef.h>
@@ -100,4 +100,4 @@ typedef struct {
 //   return vector->data[index];
 // }
 
-#endif // VECTOR_H_
+#endif // VECTOR_C_
