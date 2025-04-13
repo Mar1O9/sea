@@ -29,7 +29,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 typedef struct {
   // TODO: replace the int32_t with the type you need
   int32_t *data;
@@ -37,60 +36,56 @@ typedef struct {
   size_t capacity;
 } Vector;
 
+#define _vectorCheckSize(vector)                                               \
+  do {                                                                         \
+    if (vector.length >= vector.capacity) {                                    \
+      if (vector.capacity == 0)                                                \
+        vector.capacity = 2;                                                   \
+      else                                                                     \
+        vector.capacity *= 2;                                                  \
+      vector.data =                                                            \
+          realloc(vector.data, vector.capacity * sizeof(vector.data[0]));      \
+    }                                                                          \
+  } while (0)
 
-#define _vectorCheckSize(vector) do \
-{ \
-    if (vector.length >= vector.capacity) { \
-      if (vector.capacity == 0) \
-      vector.capacity = 2;\
-    else\
-      vector.capacity *= 2; \
-    vector.data = realloc(vector.data, vector.capacity * sizeof(vector.data[0])); \
-  } \
-}while(0)
+#define VectorAppend(vector, value)                                            \
+  do {                                                                         \
+    _vectorCheckSize(vector);                                                  \
+    vector.data[vector.length++] = value;                                      \
+  } while (0)
 
-#define VectorAppend(vector,  value) do \
-{                                       \
-    _vectorCheckSize(vector);\
-  vector.data[vector.length++] = value; \
-} while (0)
+#define VectorPop(vector)                                                      \
+  do {                                                                         \
+    assert(vector.length > 0 && "Vector should be > 0 to pop");                \
+    vector.data[vector.length] = 0;                                            \
+    vector.length--;                                                           \
+  } while (0)
 
-#define VectorPop(vector) do \
-{ \
-  assert(vector.length > 0 && "Vector should be > 0 to pop"); \
-  vector.data[vector.length] = 0; \
-  vector.length--; \
-} while(0)
+#define VectorShift(vector)                                                    \
+  do {                                                                         \
+    assert(vector.length > 0 && "Vector should be > 0 to shift");              \
+    memmove(&vector.data[0], &vector.data[1],                                  \
+            vector.capacity * sizeof(*vector.data));                           \
+    vector.length--;                                                           \
+  } while (0)
 
+#define VectorUnShift(vector, value)                                           \
+  do {                                                                         \
+    _vectorCheckSize(vector);                                                  \
+    memmove(&vector.data[1], &vector.data[0],                                  \
+            vector.capacity * sizeof(*vector.data));                           \
+    vector.data[0] = value;                                                    \
+    vector.length++;                                                           \
+  } while (0)
 
-#define  VectorShift(vector) do \
-{ \
-  assert(vector.length > 0 && "Vector should be > 0 to shift"); \
-  memmove(&vector.data[0], &vector.data[1], \
-      vector.capacity * sizeof(*vector.data)); \
-  vector.length--; \
-} while(0)
-
-
-#define  VectorUnShift(vector, value) do \
-{ \
-  _vectorCheckSize(vector);\
-  memmove(&vector.data[1], &vector.data[0], \
-         vector.capacity * sizeof(*vector.data)); \
-  vector.data[0] = value; \
-  vector.length++; \
-} while(0)
-
-
-#define  VectorInsert(vector, index, value) do \
-{ \
-   _vectorCheckSize(vector);\
-  memmove(&vector.data[index + 1], &vector.data[index], \
-          vector.capacity * sizeof(*vector.data)); \
-  vector.data[index] = value; \
-  vector.length++;\
-} while(0)
-
+#define VectorInsert(vector, index, value)                                     \
+  do {                                                                         \
+    _vectorCheckSize(vector);                                                  \
+    memmove(&vector.data[index + 1], &vector.data[index],                      \
+            vector.capacity * sizeof(*vector.data));                           \
+    vector.data[index] = value;                                                \
+    vector.length++;                                                           \
+  } while (0)
 
 // TODO: replace the type of from int32_t to the type you need
 // int32_t VectorGetElement(Vector *vector, int index) {
